@@ -4218,3 +4218,85 @@ local Library do
             return Textbox
         end
     end
+
+    Library.CreateSettingsPage = function(self, Window)
+        local SettingsPage = Window:Page({Name = "Configs", Icon = "127560542449617", SubPages = false, Columns = 2})
+
+        local ConfigsSection = SettingsPage:Section({Name = "Configs", Side = 1}) do
+            local ConfigName 
+            local ConfigSelected
+
+            local ConfigName 
+            local ConfigSelected 
+
+            local ConfigsDropdown = ConfigsSection:Dropdown({
+                Name = "Configs", 
+                Flag = "ConfigsList", 
+                Items = { }, 
+                Multi = false,
+                Callback = function(Value)
+                    ConfigSelected = Value
+                end
+            })
+
+            ConfigsSection:Textbox({
+                Name = "Config name",
+                Flag = "ConfigName",
+                Placeholder = "Config name",
+                Callback = function(Value)
+                    ConfigName = Value
+                end
+            })
+
+            ConfigsSection:Button({
+                Name = "Create",
+                Callback = function()
+                    if ConfigName and ConfigName ~= "" then
+                        if not isfile(Library.Folders.Configs .. "/" .. ConfigName .. ".json") then
+                            writefile(Library.Folders.Configs .. "/" .. ConfigName .. ".json", Library:GetConfig())
+                            Library:RefreshConfigsList(ConfigsDropdown)
+                        end
+                    end
+                end
+            })
+
+            ConfigsSection:Button({
+                Name = "Delete",
+                Callback = function()
+                    if ConfigSelected then
+                        delfile(Library.Folders.Configs .. "/" .. ConfigSelected)
+                        Library:RefreshConfigsList(ConfigsDropdown)
+                    end
+                end
+            })
+
+            ConfigsSection:Button({
+                Name = "Load",
+                Callback = function()
+                    if ConfigSelected then
+                        Library:LoadConfig(readfile(Library.Folders.Configs .. "/" .. ConfigSelected))
+                    end
+                end
+            })
+
+            ConfigsSection:Button({
+                Name = "Save",
+                Callback = function()
+                    if ConfigSelected then
+                        writefile(Library.Folders.Configs .. "/" .. ConfigSelected, Library:GetConfig())
+                    end
+                end
+            })
+
+            ConfigsSection:Button({
+                Name = "Refresh",
+                Callback = function()
+                    Library:RefreshConfigsList(ConfigsDropdown)
+                end
+            })
+
+            Library:RefreshConfigsList(ConfigsDropdown)
+        end
+    end
+end
+
