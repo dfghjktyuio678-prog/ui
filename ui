@@ -2064,9 +2064,9 @@ local Library do
                         Parent = Library.Holder.Instance,
                         Text = "",
                         AutoButtonColor = false,
-                        AnchorPoint = Vector2New(0, 0),
+                        AnchorPoint = Vector2New(0.5, 0),
                         Name = "\0",
-                        Position = UDim2New(100, 0, 0, 125),
+                        Position = UDim2New(0.5, 0, 0, 25),
                         BorderColor3 = FromRGB(0, 0, 0),
                         Size = UDim2New(0, 50, 0, 50),
                         BorderSizePixel = 0,
@@ -2668,29 +2668,15 @@ local Library do
                 end)
             end
 
-            if IsMobile then
-                Items["Inactive"]:Connect("InputBegan", function(Input)
-                    if Input.UserInputType == Enum.UserInputType.Touch then 
-                        for Index, Value in Page.Window.Pages do 
-                            if Value == Page and Page.Active then
-                                return
-                            end
-
-                            Value:Turn(Value == Page)
-                        end
+            Items["Inactive"]:Connect("MouseButton1Down", function()
+                for Index, Value in Page.Window.Pages do 
+                    if Value == Page and Page.Active then
+                        return
                     end
-                end)
-            else
-                Items["Inactive"]:Connect("MouseButton1Down", function()
-                    for Index, Value in Page.Window.Pages do 
-                        if Value == Page and Page.Active then
-                            return
-                        end
 
-                        Value:Turn(Value == Page)
-                    end
-                end)
-            end 
+                    Value:Turn(Value == Page)
+                end
+            end)
 
             if #Page.Window.Pages == 0 then 
                 Page:Turn(true)
@@ -4406,8 +4392,5 @@ local Library do
         end
     end
 end
-
-
-
 getgenv().Library = Library
 return Library
